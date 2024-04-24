@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 //Matrix multiplication function
 std::vector<std::vector<int>> matrixMultiply(const std::vector<std::vector<int>> & matrix1, const std::vector<std::vector<int>> & matrix2){
@@ -18,9 +19,44 @@ std::vector<std::vector<int>> matrixMultiply(const std::vector<std::vector<int>>
     }
     return product;
 }
+//Print matrix function
+int printMatrix(const std::vector<std::vector<int>> &matrix){
+    for(int i = 0; i<matrix.size(); i++){
+        for(int j=0; j<matrix[0].size(); j++){
+            std::cout << matrix[i][j] << " " << std::flush;
+        }
+    }
+
+    return 0;
+}
 
 int main(){
-    std::cout << "Hello World" << std::endl;
+
+    //Initializing two test matrices
+    std::vector<std::vector<int>> matrix1 = {
+        {1,2,3},
+        {4,5,6}
+    };
+    std::vector<std::vector<int>> matrix2 = {
+        {1,2},
+        {3,4},
+        {5,6}
+    };
+
+    //start time
+    auto start= std::chrono::steady_clock::now();
+
+    std::vector<std::vector<int>> answer = matrixMultiply(matrix1, matrix2);
+
+    auto end= std::chrono::steady_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+
+
+
+    
+
+
     return 0;
 
 }
