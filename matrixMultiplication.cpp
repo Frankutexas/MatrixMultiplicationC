@@ -11,10 +11,12 @@ std::vector<std::vector<int>> matrixMultiply(const std::vector<std::vector<int>>
     std::vector<std::vector<int>> product(std::vector<std::vector<int>>(rows1, std::vector<int>(cols2,0)));
 
     for(int i = 0; i<rows1; i++){
-        for(int j=0; j<cols1; j++){
-            for(int k=0; k<cols2; k++){
+        for(int j=0; j<cols2; j++){
+            for(int k=0; k<cols1; k++){
                 product[i][j] += matrix1[i][k] * matrix2[k][j];
+                std::cout << product[i][j] << " " << std::flush;
             }
+            std::cout << "Matrix[" << i << "]" << "[" << j << "] = "<< product[i][j] << " " << std::endl;
         }
     }
     return product;
@@ -50,9 +52,11 @@ int main(){
 
     auto end= std::chrono::steady_clock::now();
 
+    printMatrix(answer);
+
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
 
-
+    std::cout << "Time in microseconds: " << duration.count() << std::endl;
 
     
 
