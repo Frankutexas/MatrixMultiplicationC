@@ -2,6 +2,59 @@
 #include <vector>
 #include <chrono>
 #include <random>
+#include <fstream>
+
+
+// Function to read numbers from a file and populate a matrix
+std::vector<std::vector<int>> readMatrixFromFile(int rows, int cols, const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Error: Unable to open file " + filename);
+    }
+
+    // Create a matrix of the specified size
+    std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
+
+    // Read numbers from the file into the matrix
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            if (!(file >> matrix[i][j])) {
+                throw std::runtime_error("Error: Unable to read number from file " + filename);
+            }
+        }
+    }
+
+    // Close the file
+    file.close();
+
+    return matrix;
+}
+//Function to read numbers from a file into a vector
+std::vector<int> readVectorFromFile(int size, const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Error: Unable to open file " + filename);
+    }
+
+    // Create a vector of the specified size
+    // Create a vector of the specified size and initialize all elements to 0
+    std::vector<int> dataset(size, 0);
+    //std::vector<int> dataset;
+    //dataset.reserve(size);
+    
+    // Read numbers from the file into the vector
+    for (int i = 0; i < size; i++) {
+        if (!(file >> dataset[i])) {
+            throw std::runtime_error("Error: Unable to read number from file " + filename);
+        }
+        
+    }
+
+    // Close the file
+    file.close();
+
+    return dataset;
+}
 
 //Matrix multiplication function
 std::vector<std::vector<int>> matrixMultiply(const std::vector<std::vector<int>> & matrix1, const std::vector<std::vector<int>> & matrix2){
@@ -15,9 +68,9 @@ std::vector<std::vector<int>> matrixMultiply(const std::vector<std::vector<int>>
         for(int j=0; j<cols2; j++){
             for(int k=0; k<cols1; k++){
                 product[i][j] += matrix1[i][k] * matrix2[k][j];
-                std::cout << product[i][j] << " " << std::flush;
+                
             }
-            std::cout << "Matrix[" << i << "]" << "[" << j << "] = "<< product[i][j] << " " << std::endl;
+            
         }
     }
     return product;
@@ -32,74 +85,128 @@ int printMatrix(const std::vector<std::vector<int>> &matrix){
 
     return 0;
 }
+//Writing numbers to file function
+void writeNumbersToFile(const std::vector<int>& numbers, const std::string& filename) {
+    std::ofstream outputFile(filename);
+    if (!outputFile.is_open()) {
+        std::cerr << "Error: Unable to open file " << filename << " for writing." << std::endl;
+        return;
+    }
 
+    // Write numbers to the file
+    for (int num : numbers) {
+        outputFile << num << std::endl;
+    }
+
+    outputFile.close();
+}
+// Function to fill matrices from vector
+void fillMatricesFromVector(const std::vector<int>& vec, std::vector<std::vector<int>>& matrix1, std::vector<std::vector<int>>& matrix2, int rows, int cols, int index) {
+    
+
+    // Fill matrix1 (100x150) Need to add try/catch
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            matrix1[i][j] = vec[index++];
+        }
+    }
+
+    // Fill matrix2 (150x100) Need to add try/catch
+    for (int i = 0; i < cols; ++i) {
+        for (int j = 0; j < rows; ++j) {
+            matrix2[i][j] = vec[index++];
+        }
+    }
+}
 int main(){
 
-    //Initializing two test matrices
-    std::vector<std::vector<int>> matrix1 = {
-        {1,2,3},
-        {4,5,6}
-    };
-    std::vector<std::vector<int>> matrix2 = {
-        {1,2},
-        {3,4},
-        {5,6}
-    };
-
     
-    // Create a random number generator engine
-    std::random_device rd;  // Seed engine from hardware entropy
-    std::mt19937 gen(rd()); // Mersenne Twister pseudo-random number generator
+    std::vector<std::vector<int>> largeMatrix1 = readMatrixFromFile(100, 150, "testMatrix1.txt");
+    
+    std::vector<std::vector<int>> largeMatrix2 = readMatrixFromFile(150, 100, "testMatrix2.txt");
 
-    // Define the distribution
-    std::uniform_int_distribution<int> dist(1, 100); // Uniform distribution between 1 and 100
+    //Initialize product matrix. Resize 100x100 to save time
 
-    //Initialize a 100x150 matrix and 150x100 matrix
-    std::vector<std::vector<int>> largeMatrix1;
-    std::vector<std::vector<int>> largeMatrix2;
+    std::vector<std::vector<int>> answer2;
 
-    //Fill with random numbers between 1-100
-    for(int i = 0; i <100; i++){
-        for(int j =0; j<150; j++){
-             int random_number = dist(gen);
-             largeMatrix1[i].push_back(random_number);
-        }
-       
+    answer2.resize(100);
+
+    for(int i = 0; i< 100; i++){
+        answer2[i].resize(100);
     }
-    for(int i = 0; i <150; i++){
-        for(int j =0; j<100; j++){
-             int random_number = dist(gen);
-             largeMatrix2[i].push_back(random_number);
-        }
-       
-    }
-
+    
     //start time
     auto start= std::chrono::steady_clock::now();
 
-    std::vector<std::vector<int>> answer = matrixMultiply(matrix1, matrix2);
+    answer2 = matrixMultiply(largeMatrix1, largeMatrix2);
+    //std::vector<std::vector<int>> answer2 = matrixMultiply(largeMatrix1, largeMatrix2);
+    //answer2.clear();
+
+    for(int i = 0; i < 400; i++){
+        //std::vector<std::vector<int>> answer2 = matrixMultiply(largeMatrix1, largeMatrix2);
+        answer2 = matrixMultiply(largeMatrix1, largeMatrix2);
+        //answer2.clear();
+    }
 
     auto end= std::chrono::steady_clock::now();
 
-    printMatrix(answer);
+    printMatrix(answer2);
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
 
     std::cout << "Time in microseconds: " << duration.count() << std::endl;
 
+    std::vector<int> full_dataset;
+    full_dataset = readVectorFromFile(150000, "Full_Dataset.txt");
+
+    std::vector<std::vector<int>> full_matrix1;
+    std::vector<std::vector<int>> full_matrix2;
+    std::vector<std::vector<int>> full_matrix_answer;
+
+    full_matrix1.resize(100);
+    full_matrix2.resize(150);
+
+    full_matrix_answer.resize(100);
+
+    //Allocate space for each vector
+    for(int i = 0; i < 100; i++){
+        full_matrix1[i].resize(150);
+    }
+
+    for(int i = 0; i< 150; i++){
+        full_matrix2[i].resize(100);
+    }
+    for(int i = 0; i < 100; i++){
+        full_matrix_answer[i].resize(100);
+    }
+    long long full_duration = 0;
+
+
     
-    //start time
-    auto start= std::chrono::steady_clock::now();
+    //Populate the 2 matrices 5 times
+    for(int i = 0; i< 5; i++){
+        int index = i*30000;
+        fillMatricesFromVector(full_dataset, full_matrix1, full_matrix2, 100, 150, index);
 
-    std::vector<std::vector<int>> answer = matrixMultiply(largeMatrix1, largeMatrix2);
+        auto full_start = std::chrono::steady_clock::now();
 
-    auto end= std::chrono::steady_clock::now();
+        full_matrix_answer = matrixMultiply(full_matrix1, full_matrix2);
 
-    printMatrix(answer);
+        auto full_end = std::chrono::steady_clock::now();
 
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+        auto each_duration = std::chrono::duration_cast<std::chrono::microseconds>(full_end-full_start);
 
-    std::cout << "Time in microseconds: " << duration.count() << std::endl;
+        full_duration += each_duration.count();
+
+        //printMatrix(full_matrix_answer);
+
+        //full_matrix1.clear();
+        //full_matrix2.clear();
+    }
+
+    
+    std::cout << "Time in microseconds for full dataset: " << full_duration << std::endl;
+    
 
     return 0;
 

@@ -1,6 +1,33 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class MatrixMultiplication {
+
+    //Method to read test matrix from a file
+    public static int[][] readMatrixFromFile(String filename, int rows, int cols) {
+        int[][] matrix = new int[rows][cols];
+        try {
+            File file = new File(filename);
+            Scanner scanner = new Scanner(file);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    if (scanner.hasNextInt()) {
+                        matrix[i][j] = scanner.nextInt();
+                    } else {
+                        throw new IllegalArgumentException("Not enough numbers in the file");
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filename);
+            e.printStackTrace();
+        }
+        return matrix;
+    }
     
-    // Function to perform matrix multiplication
+    // Method to perform matrix multiplication
     public static int[][] matrixMultiply(int[][] matrix1, int[][] matrix2) {
         int rows1 = matrix1.length;
         int cols1 = matrix1[0].length;
@@ -20,23 +47,19 @@ public class MatrixMultiplication {
     }
 
     public static void main(String[] args) {
-        // Define two matrices
-        int[][] matrix1 = {
-            {1, 2, 3},
-            {4, 5, 6},
-        };
-        int[][] matrix2 = {
-            {1, 2},
-            {3, 4},
-            {5, 6}
-        };
+        int[][] matrix1 = readMatrixFromFile("testMatrix1.txt", 100, 150);
+        int[][] matrix2 = readMatrixFromFile("testMatrix2.txt", 150, 100);
         //Add timestamp
         long startTime = System.currentTimeMillis();
 
         // Perform matrix multiplication
         int[][] result = matrixMultiply(matrix1, matrix2);
+        for(int i = 0; i < 400; i++){
+            matrixMultiply(matrix1, matrix2);
+        }
 
         long endTime = System.currentTimeMillis();
+        
 
         long duration = endTime - startTime;
 
@@ -50,6 +73,6 @@ public class MatrixMultiplication {
             System.out.println();
         }
         //Print the time taken
-        System.out.println("Time taken: " + duration + " milliseconds");
+        System.out.println("Time taken: " + duration*1000 + " microseconds");
     }
 }

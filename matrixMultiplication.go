@@ -1,7 +1,52 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+)
+// Read numbers from a file into a 2D matrix
+func readNumbersFromFile(filename string) ([][]int, error) {
+	// Open the file for reading
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
 
+	// Initialize the matrix
+	var matrix [][]int
+
+	// Create a scanner to read from the file
+	scanner := bufio.NewScanner(file)
+
+	// Scan each line of the file
+	for scanner.Scan() {
+		// Split the line into individual numbers
+		numStrs := strings.Fields(scanner.Text())
+
+		// Convert each number from string to int and append to the matrix
+		var row []int
+		for _, numStr := range numStrs {
+			num, err := strconv.Atoi(numStr)
+			if err != nil {
+				return nil, err
+			}
+			row = append(row, num)
+		}
+		matrix = append(matrix, row)
+	}
+
+	// Check for any errors encountered during scanning
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return matrix, nil
+}
 func matrixMultiply(matrix1 [][]int, matrix2 [][]int) [][]int {
 	rows1 := len(matrix1)
 	cols1 := len(matrix1[0])
@@ -26,22 +71,39 @@ func matrixMultiply(matrix1 [][]int, matrix2 [][]int) [][]int {
 }
 
 func main() {
-	// Example matrices
-	matrix1 := [][]int{
-		{1, 2, 3},
-		{4, 5, 6},
-		{7, 8, 9},
+	//Read in the test matrices
+	// Read numbers from the file into a matrix
+	matrix1, err := readNumbersFromFile("testMatrix1.txt")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
-	matrix2 := [][]int{
-		{9, 8, 7},
-		{6, 5, 4},
-		{3, 2, 1},
+	// Read numbers from the file into a matrix
+	matrix2, err := readNumbersFromFile("testMatrix2.txt")
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
+
+	// Record the start time
+	start := time.Now()
 
 	// Perform matrix multiplication
 	result := matrixMultiply(matrix1, matrix2)
+
+	for i := 0; i<400; i++{
+		matrixMultiply(matrix1, matrix2)
+	}
+
+	//Record end time
+	end := time.Now()
+
+	//Calculate duration
+	duration := end.Sub(start)
+
 	fmt.Println("Result of matrix multiplication:")
 	for _, row := range result {
 		fmt.Println(row)
 	}
+	fmt.Printf("Time taken: %v microseconds\n", duration.Microseconds())
 }
