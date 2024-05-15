@@ -23,10 +23,12 @@ is a very useful tool that is used in many computing applications and machine le
 
 During my tests, I decided to first test a matrix multiplication of just a 100x150 and 150x100 matrix. I then repeated this test 400 times in a loop, to reduce variance.
 
+```markdown
 | Number of Attempts | C++      | Go       | Java   | Python     |
 | ------------------ | -------- | -------- | ------ | ---------- |
 | 1 try              | 22.5 ms  | 6.3 ms   | 9.0 ms | 285.5 ms   |
 | 400 tries          | 8,580 ms | 1,151 ms | 636 ms | 107,029 ms |
+```
 
 This simple test already revealed some very surprising results to me. Python being abysmally slow made sense as it was built with readability in mind and not performance. However, how could Java have outperformed C++, a language that prides itself on its efficiency. In addition, why was Java slower than Go on the first try, but on repeated tries it is significantly faster. Was it possible that because I was using the same data 400 times, Java had used some optimization to reduce the computation? Were there some load times not accounted for when setting up large 2D arrays?
 
@@ -40,10 +42,12 @@ I ran the test again. This time I would add on another test of 10 different matr
 
 This time the results were much better.
 
+```markdown
 | Number of Attempts                | C++    | Go       | Java   | Python    |
 | --------------------------------- | ------ | -------- | ------ | --------- |
 | 400 tries                         | 215 ms | 1,103 ms | 601 ms | 91,988 ms |
 | 400 tries with 5 different inputs | 228 ms | 1,118 ms | 625 ms | 95,431 ms |
+```
 
 After I included the ‘O3’ optimization flag, the C++ program completed significantly faster. For every language, the difference between 400 reps with the same input data and with different inputs was negligible and could be explained with statistical variance. In addition, in the second trial, I added in a loop at the beginning of each program that would run 400 reps without taking the time. This was an attempt to negate or at least reduce the effect of startup or load time in the actual time duration for each language. However, it appeared that the load time was insignificant as the 400 repetitions before the startup did not seem to reduce or increase the actual time of the function.
 
@@ -51,10 +55,12 @@ This is a table of the performance of each language using C++ as the baseline.
 
 Performance using C++ as a baseline.
 
+```markdown
 | Number of Attempts                | C++  | Go    | Java  | Python |
 | --------------------------------- | ---- | ----- | ----- | ------ |
 | 400 tries                         | 100% | 19.1% | 36.6% | 0.225% |
 | 400 tries with 5 different inputs | 100% | 18.1% | 28.6% | 0.222% |
+```
 
 For 400 tries with the same input, C++ performed at 100%, Go performed at 19.1% of C++’s performance, Java at 36.6%, and Python at 0.225%.
 
