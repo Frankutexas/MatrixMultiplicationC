@@ -25,7 +25,6 @@ During my tests, I decided to first test a matrix multiplication of just a 100x1
 
 
 | Number of Attempts | C++      | Go       | Java   | Python     |
-
 | ------------------ | -------- | -------- | ------ | ---------- |
 | 1 try              | 22.5 ms  | 6.3 ms   | 9.0 ms | 285.5 ms   |
 | 400 tries          | 8,580 ms | 1,151 ms | 636 ms | 107,029 ms |
@@ -45,7 +44,6 @@ This time the results were much better.
 
 
 | Number of Attempts                | C++    | Go       | Java   | Python    |
-
 | --------------------------------- | ------ | -------- | ------ | --------- |
 | 400 tries                         | 215 ms | 1,103 ms | 601 ms | 91,988 ms |
 | 400 tries with 5 different inputs | 228 ms | 1,118 ms | 625 ms | 95,431 ms |
@@ -59,7 +57,6 @@ Performance using C++ as a baseline.
 
 
 | Number of Attempts                | C++  | Go    | Java  | Python |
-
 | --------------------------------- | ---- | ----- | ----- | ------ |
 | 400 tries                         | 100% | 19.1% | 36.6% | 0.225% |
 | 400 tries with 5 different inputs | 100% | 18.1% | 28.6% | 0.222% |
