@@ -36,7 +36,7 @@ During my tests, I decided to first test a matrix multiplication of just a 100x1
 
 This simple test already revealed some very surprising results to me. Python being abysmally slow made sense as it was built with readability in mind and not performance. However, how could Java have outperformed C++, a language that prides itself on its efficiency. In addition, why was Java slower than Go on the first try, but on repeated tries it is significantly faster. Was it possible that because I was using the same data 400 times, Java had used some optimization to reduce the computation? Were there some load times not accounted for when setting up large 2D arrays?
 
-After doing some more research, I discovered that the compiler I was using for C++, namely GCC, optimizes the compilation speed by default, for debugging, at the cost of performance. I needed to use the ‘O3’ flag when compiling in order to force the compiler to optimize instead for performance.
+The reason why C++ performed significantly slower than Java and Go was because the compiler, namely GCC, optimizes the compilation speed by default, for debugging, at the cost of performance. In order to get the most optimal performance when using C++, the ‘O3’ flag must be used when compiling to force the compiler to optimize instead for performance.
 
 ```bash
 g++ -O3 -o matrixMultiplicationCPP matrixMultiplication.cpp
